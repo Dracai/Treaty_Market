@@ -19,7 +19,9 @@
             </div>
             <div class="col">
                 <div class="input-group" style="margin: 1em 0 0 4.1em;width: 30em;">
+                <?php if(session()->get('isLoggedInAdmin')): ?>
                 <button class="btn btn-primary" type="button" style="background: rgb(25,135,84);">Add Product</button>
+                <?php endif; ?>
                 <input class="form-control" type="text" style="margin-left: 55px;"><button class="btn btn-primary" type="button" style="padding: 6px 12px;background: rgb(25,135,84);">Search</button></div>
             </div>
         </div>
@@ -59,8 +61,12 @@
                         <td style="border-right-width: 1px;border-right-color: rgb(222,226,230);border-left: 1px solid rgb(222,226,230) ;">€ <?= $newsItem['bulkBuyPrice']?></td>
                         <?php if(session()->get('isLoggedInCustomer')):?>
                         <td>
+                            <a href="<?php echo site_url('GeneralUser/addToShoppingCart/'.$newsItem['produceCode'].'/'.$newsItem['quantityInStock'])?>">
                             <button class="btn btn-primary" type="button_addToCart" style="width: 80px;margin: 0 0 .25em 0 ;">Add to Cart</button>
-                            <a href="<?php echo site_url('GeneralUser/addToWishlist/'.$newsItem['produceCode'].'/'.$newsItem['description'].'/'.$newsItem['bulkBuyPrice']);?>"><button class="btn btn-primary" id="button_wishlist" type="button" style="width: 80px;">Wishlist</button></a>
+                            </a>
+                            <a href="<?php echo site_url('GeneralUser/addToWishlist/'.$newsItem['bulkBuyPrice'].'/'.$newsItem['description'].'/'.$newsItem['produceCode'])?>">
+                                <button class="btn btn-primary" id="button_wishlist" type="button" style="width: 80px;">Wishlist</button>
+                            </a>
                         </td>
                         <?php elseif(session()->get('isLoggedInAdmin')): ?>
                         <td><button class="btn btn-primary" type="button">Remove</button></td>

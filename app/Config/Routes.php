@@ -44,7 +44,8 @@ $routes->match(['get', 'post'], 'register', 'GeneralUser::register');
 $routes->match(['get', 'post'], 'drilldown/(:any)', 'GeneralUser::drilldown/$1');
 $routes->match(['get', 'post'], 'adminDrilldown/(:any)', 'Administrator::drilldown/$1');
 $routes->match(['get', 'post'], 'profile', 'GeneralUser::profile');
-
+$routes->match(['get', 'post'], 'addToWishlist', 'GeneralUser::addToWishlist/$1/$2/$3');
+$routes->match(['get', 'post'], 'addToShoppingCart', 'GeneralUser::addToShoppingCart/$1/$2');
 
 /*
  * --------------------------------------------------------------------

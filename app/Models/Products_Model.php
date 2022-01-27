@@ -23,4 +23,11 @@ class Products_Model extends Model
         $query = $builder->countAll();
         return $query;
     }
+
+    public function getProductsByID($id)
+    {
+        return $this->asArray()
+                    ->where(['produceCode' => $id])
+                    ->first();
+    }
 }

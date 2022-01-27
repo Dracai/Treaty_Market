@@ -1,7 +1,6 @@
 <div class="container" style="margin: 16px 300px;background: #eef4f7;padding: 1em 0;">
     <div class="row">
         <div class="col-md-6" style="margin: 1em 0 ;">
-            <h2 style="text-align: center;"><?= $post["produceCode"]?></h2>
             <img class="img-fluid" src="<?php echo base_url(); ?>/assets/images/products/full/<?= $post["photo"] ?>">
         </div>
         <div class="col-md-6">
@@ -19,8 +18,10 @@
             </select>
             <label class="form-label">Quantity</label>
             <input class="form-control" type="text" style="margin: 0 0 .5em 0;width: 350px;" value="<?= $post["quantityInStock"]?>">
-            <label class="form-label" >Price</label>
-            <input class="form-control" type="text" style="margin: 0 0 .5em 0;width: 350px;" value="<?= $post["bulkBuyPrice"]?>">
+            <label class="form-label" >Bulk Buy Price</label>
+            <input class="form-control" type="text" style="margin: 0 0 .5em 0;width: 350px;" value="€ <?= $post["bulkBuyPrice"]?>">
+            <label class="form-label" >Bulk Sale Price</label>
+            <input class="form-control" type="text" style="margin: 0 0 .5em 0;width: 350px;" value="€ <?= $post["bulkSalePrice"]?>">
             <label class="form-label">Image Upload</label>
             <input class="form-control" type="file" name="userfile" style="margin: 0 0 .5em 0;width: 350px;">
             <div class="btn-group" role="group">
