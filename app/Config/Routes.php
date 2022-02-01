@@ -42,10 +42,13 @@ $routes->get('adminHome', 'Administrator::home');
 $routes->match(['get', 'post'], 'login', 'GeneralUser::login'); 
 $routes->match(['get', 'post'], 'register', 'GeneralUser::register');
 $routes->match(['get', 'post'], 'drilldown/(:any)', 'GeneralUser::drilldown/$1');
+$routes->match(['get', 'post'], 'addProduct', 'Administrator::addProduct');
 $routes->match(['get', 'post'], 'adminDrilldown/(:any)', 'Administrator::drilldown/$1');
 $routes->match(['get', 'post'], 'profile', 'GeneralUser::profile');
 $routes->match(['get', 'post'], 'addToWishlist', 'GeneralUser::addToWishlist/$1/$2/$3');
-$routes->match(['get', 'post'], 'addToShoppingCart', 'GeneralUser::addToShoppingCart/$1/$2');
+$routes->match(['get', 'post'], 'addToShoppingCart', 'GeneralUser::addToShoppingCart/$1');
+$routes->match(['get', 'post'], 'viewOrders', 'Administrator::viewOrders');
+$routes->match(['get', 'post'], 'viewOrderDetails/(:any)', 'Administrator::viewOrderDetails/$1');
 
 /*
  * --------------------------------------------------------------------

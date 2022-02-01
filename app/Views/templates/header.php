@@ -43,7 +43,7 @@
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/browse" style="color: rgb(255,255,255);">Browse</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/suppliers" style="color: rgb(255,255,255);">Suppliers</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/suppliers" style="color: rgb(255,255,255);">Orders</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/Administrator/viewOrders" style="color: rgb(255,255,255);">Orders</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/suppliers" style="color: rgb(255,255,255);">Users</a></li>
                 </ul>
                 <form class="me-auto search-form" target="_self">

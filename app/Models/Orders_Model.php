@@ -13,4 +13,14 @@ class Orders_Model extends Model
         $query = $builder->countAll();
         return $query;
     }
+
+    public function getOrders($orderID = null)
+    {
+        if(!$orderID)
+            return $this->findAll();
+
+        return $this->asArray()
+                    ->where(['orderNumber' => $orderID])
+                    ->first();
+    }
 }

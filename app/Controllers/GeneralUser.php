@@ -171,13 +171,13 @@ class GeneralUser extends BaseController
 
     public function browse()
     {
-        $model = new Products_Model();
+            $model = new Products_Model();
 
-        $data['news'] = $model->getProducts();
+            $data['news'] = $model->getProducts();
 
-        echo view ('templates/header', $data);
-        echo view('browse');
-        echo view ('templates/footer');
+            echo view ('templates/header', $data);
+            echo view('browse');
+            echo view ('templates/footer');
     }
 
     public function drilldown($prodID)
@@ -266,43 +266,4 @@ class GeneralUser extends BaseController
 
         return redirect()->to('/browse');
     }
-
-    public function upload()
-    {
-        helper(['form', 'url']);
-
-        $model = new Products_Model();
-
-        $validateImg = $this->validate
-        ([
-            'file' => [
-                'uploaded[file]',
-                'mime_in[file,image/jpg,image/jpeg,image/png,image/gif]',
-                'max_size[file,4096]'
-            ]
-        ]);
-
-        if(!$validateImg)
-        {
-            print_r('Either file type or size (Max 4MB) are not correct.');
-        }
-        else
-        {
-            $x_file = $this->request->getFile('file');
-            $image = \Config\Services::image()
-                    ->withFile($x_file)
-                    ->resize(100, 100, true, 'height')
-                    ->save(FCPATH.'/images'.$x_file->getRandomName());
-
-            $x_file->move(WRITEPATH.'uploads');
-
-            $fileData = [
-                'name' => $x_file->getName(),
-                'type' => $x_file->getClientMimeType()
-            ];
-
-            print_r('Image inserted and stored');
-        }
-    }
-
 }

@@ -25,8 +25,13 @@
             <label class="form-label">Image Upload</label>
             <input class="form-control" type="file" name="userfile" style="margin: 0 0 .5em 0;width: 350px;">
             <div class="btn-group" role="group">
-                <button class="btn btn-primary" tpye="button" style="margin: 1em;background: rgb(25,135,84);">Save</button>
-                <button class="btn btn-primary" tpye="button" style="margin: 1em;background: rgb(25,135,84);">Delete</button>
+                <a href="" onlick="">
+                    <button class="btn btn-primary" type="button" name="save" id="save" style="margin: 1em;background: rgb(25,135,84);">Save</button>
+                </a>
+                <a href="<?php echo site_url('Administrator/delProduct/'.$post["produceCode"]); ?>" 
+                    onclick="return confirm('Are you sure you want to delete this product?');">
+                    <button class="btn btn-primary" type="button" name="delete" id="delete" style="margin: 1em;background: rgb(25,135,84);">Delete</button>
+                </a>
             </div>
         </form>
         </div>

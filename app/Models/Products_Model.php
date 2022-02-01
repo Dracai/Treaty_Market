@@ -30,4 +30,17 @@ class Products_Model extends Model
                     ->where(['produceCode' => $id])
                     ->first();
     }
+
+    public function countIDs()
+    {
+        $builder = $this->builder();
+        $query = $builder->where('produceCode', 'S20_%')->countAll();
+        return $query;
+    }
+
+    public function delProd($prodCode)
+    {
+        $this->db->table('products')->where('produceCode', $prodCode)->delete();
+        return;
+    }
 }
