@@ -212,6 +212,11 @@ class GeneralUser extends BaseController
             'wishlist' => $model->getProductsByCustomer(session()->get('customerNumber'))
         ];
 
+        if($this->request->getMethod() == 'post')
+        {
+
+        }
+
         echo view ('templates/header', $data);
         echo view('profile');
         echo view ('templates/footer');
@@ -259,11 +264,11 @@ class GeneralUser extends BaseController
         }
     }
 
-    public function addToShoppingCart($productID, $quantity)
+    public function addToShoppingCart($productID)
     {
         $session = session();
-        $session->push('shoppingCart', [$productID => $quantity]);
-
-        return redirect()->to('/browse');
+        $session->push('shoppingCart', [$productID => $this->request->getVar('quantity')]);
+        $session->setFlashdata('addedToShoppingCart', 'The Item has been added to the Shopping Cart');
+        return redirect()->back();
     }
 }

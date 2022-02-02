@@ -68,7 +68,7 @@
                                 <input type="number" id="quantity" name="quantity" sytle="width: 60.188px" min="0">
                             </td>
                             <td>
-                                <a href="<?php echo site_url('GeneralUser/addToWishlist/'.$newsItem['bulkBuyPrice'].'/'.$newsItem['description'].'/'.$newsItem['produceCode'])?>">
+                                <a href="<?php echo site_url('GeneralUser/addToShoppingCart/'.$newsItem['produceCode'])?>">
                                     <button class="btn btn-primary" type="button_addToCart" style="width: 80px;margin: 0 0 .25em 0 ;">Add to Cart</button>
                                 </a>
                                 <a href="<?php echo site_url('GeneralUser/addToWishlist/'.$newsItem['bulkBuyPrice'].'/'.$newsItem['description'].'/'.$newsItem['produceCode'])?>">
