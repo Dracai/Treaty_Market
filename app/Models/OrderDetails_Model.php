@@ -30,4 +30,10 @@ class OrderDetails_Model extends Model
                     ->where(['orderNumber' => $orderID])
                     ->findAll();
     }
+
+    public function delOrderDetails($orderNumber)
+    {
+        $this->db->table('orderdetails')->where('orderNumber', $orderNumber)->delete();
+        return;
+    }
 }

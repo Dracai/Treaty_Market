@@ -64,4 +64,33 @@ class Customer_Model extends Model
         $query = $builder->countAll();
         return $query;
     }
+
+    public function getCustomers($customerNumber = null) 
+    {
+        if(!$customerNumber)
+            return $this->findAll();
+        
+        return $this->asArray()
+                    ->where(['customerNumber' => $customerNumber])
+                    ->first();
+    }
+
+    public function deleteCustomer($customerNumber)
+    {
+        $this->db->table('customers')->where('customerNumber', $customerNumber)->delete();
+        return;
+    }
+
+    public function searchCustomer($customerNumber) 
+    {
+        $builder = $this->builder();
+        $query = $builder->getWhere(['customerNumber' => $customerNumber])->getFirstRow();
+
+        if($query)
+        {
+            return $query;
+        }
+        else
+            return null;
+    }
 }

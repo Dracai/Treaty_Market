@@ -43,4 +43,12 @@ class Products_Model extends Model
         $this->db->table('products')->where('produceCode', $prodCode)->delete();
         return;
     }
+
+    public function findProducts($keyword)
+    {
+        $db = $this->db;
+
+        $query = $db->query("SELECT * FROM products WHERE description LIKE '%".$keyword."%'");
+        return $query->getResultArray();
+    }
 }

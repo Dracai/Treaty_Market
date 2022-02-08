@@ -1,9 +1,12 @@
 <?php namespace App\Controllers;
 
+use App\Models\BannedCustomers_Model;
+use App\Models\BannedCustoner_Model;
 use App\Models\Customer_Model;
 use App\Models\OrderDetails_Model;
 use App\Models\Products_Model;
 use App\Models\Orders_Model;
+use App\Models\Payment_Model;
 
 class Administrator extends BaseController
 {
@@ -148,11 +151,95 @@ class Administrator extends BaseController
         $detialsModel = new OrderDetails_Model();
         $orderModel = new Orders_Model();
 
+        if($this->request->getMethod() == 'post')
+        {
+            $comment = $_POST['comment'];
+            $orderNum = $_POST['orderNum'];
+
+            $orderModel->setComment($orderNum, $comment);
+        }
+
         $orderData['orders'] = $orderModel->getOrders($orderID);
         $detailsData['orderDetails'] = $detialsModel->inspectOrder($orderID);
 
         echo view ('templates/header', $orderData + $detailsData);
         echo view('orderDrilldown');
         echo view ('templates/footer');
+    }
+
+    public function displayUsers()
+    {
+        $model = new Customer_Model();
+
+        $data['customers'] = $model->getCustomers();
+
+        echo view ('templates/header', $data);
+        echo view('adminUsers');
+    }
+
+    public function delCustomer()
+    {
+        $customer = new Customer_Model();
+        $orders = new Orders_Model();
+        $orderDetails = new OrderDetails_Model();
+        $payments = new Payment_Model();
+
+        $urlsplit = explode('/', current_url());
+        $cutomerNumber = $urlsplit[count($urlsplit) - 1];
+
+        $results = $orders->getOrderNumber($cutomerNumber);
+
+        foreach($results as $x)
+        {
+            $orderDetails->delOrderDetails($x->orderNumber);
+            $orders->delOrder($x->orderNumber);
+        }
+        $payments->delCustPayments($cutomerNumber);
+
+        $customer->deleteCustomer($cutomerNumber);
+        $session = session();
+        $session->setFlashdata('deletedUser', 'The customer has been deleted');
+
+        return redirect()->back();
+    }
+
+    public function banCustomer()
+    {
+        $customerModel = new Customer_Model();
+        $banned = new BannedCustomers_Model();
+        $orders = new Orders_Model();
+        $payments = new Payment_Model();
+        $orderDetails = new OrderDetails_Model();
+
+
+        $urlsplit = explode('/', current_url());
+        $customerNumber = $urlsplit[count($urlsplit) - 1];
+
+        $customerDetail = $customerModel->searchCustomer($customerNumber);
+        $bannedUser = [
+            'email' => $customerDetail->{'email'}
+        ];
+        $banned->save($bannedUser);
+
+        $results = $orders->getOrderNumber($customerNumber);
+
+        foreach($results as $x)
+        {
+            $orderDetails->delOrderDetails($x->orderNumber);
+            $orders->delOrder($x->orderNumber);
+        }
+        $payments->delCustPayments($customerNumber);
+
+        $customerModel->deleteCustomer($customerNumber);
+        $session = session();
+        $session->setFlashdata('userBanned', 'The customer has been banned.');
+
+        return redirect()->back();
+
+    }
+
+    public function comment()
+    {
+        
     }
 }

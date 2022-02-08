@@ -44,12 +44,11 @@
                     <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/browse" style="color: rgb(255,255,255);">Browse</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/suppliers" style="color: rgb(255,255,255);">Suppliers</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/Administrator/viewOrders" style="color: rgb(255,255,255);">Orders</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/suppliers" style="color: rgb(255,255,255);">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/Administrator/displayUsers" style="color: rgb(255,255,255);">Users</a></li>
                 </ul>
                 <form class="me-auto search-form" target="_self">
                     <div class="d-flex align-items-center"><label class="form-label d-flex mb-0" for="search-field"><i class="fa fa-search" style="color: rgb(255,255,255);"></i></label><input class="form-control search-field" type="search" id="search-field" name="search" style="background: rgba(255,255,255,0);color: rgb(255,255,255);"></div>
                 </form>
-                <a class="btn btn-light action-button" role="button" href="" style="background: var(--bs-green);">Admin Functions</a>
                 <a href="<?php echo base_url(); ?>/logout"><button class="btn btn-primary" type="button" style="border-radius: 20px;height: 40px;width: 85px;margin: 0 0 0 .5em;background: rgb(255,255,255);color: rgb(40,45,50);border-width: 3px;border-color: var(--bs-green);">Logout</button></a>
             </div>
         </div>
@@ -62,6 +61,7 @@
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/browse" style="color: rgb(255,255,255);">Browse</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/" style="color: rgb(255,255,255);">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/viewOrders" style="color: rgb(255,255,255);">Orders</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/suppliers" style="color: rgb(255,255,255);">Suppliers</a></li>
                 </ul>
                 <form class="me-auto search-form" target="_self">

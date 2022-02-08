@@ -23,4 +23,34 @@ class Orders_Model extends Model
                     ->where(['orderNumber' => $orderID])
                     ->first();
     }
+
+    public function getOrderNumber($customerNumber)
+    {
+        $db = $this->db;
+
+        $query = $db->query('SELECT orderNumber FROM orders WHERE customerNumber = '.$customerNumber);
+        $results = $query->getResult();
+
+        return $results;
+    }
+
+    public function delOrder($orderNumber)
+    {
+        $this->db->table('orders')->where('orderNumber', $orderNumber)->delete();
+        return;
+    }
+
+    public function setComment($orderNum, $comment)
+    {
+        $builder = $this->builder();
+        $builder->set('comments', $comment)
+                ->where('orderNumber', $orderNum)
+                ->update();
+    }
+
+    public function getCustOrders($custID)
+    {
+        return $this->asArray()
+                    ->where(['customerNumber', $custID]);
+    }
 }

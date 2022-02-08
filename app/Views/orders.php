@@ -10,9 +10,13 @@
                         <h3 class="name"><?= $orderItem['orderNumber'] ?></h3>
                         <p class="description">Order Date : <?= $orderItem['orderDate'] ?><br>Status : <?= $orderItem['status'] ?> <br>Customer Number : <?= $orderItem['customerNumber'] ?></p>
                         <div class="social">
-                            <a href="<?php echo base_url(); ?>/Administrator/viewOrderDetails/<?= $orderItem['orderNumber'] ?>">
-                                <button class="btn btn-primary d-block w-100" type="submit" style="color: var(--bs-body-bg);background: #198754;">View Order</button>
-                            </a>
+                            <?php if(session()->get('isLoggedInAdmin')): ?>
+                                <a href="<?php echo base_url(); ?>/Administrator/viewOrderDetails/<?= $orderItem['orderNumber'] ?>">
+                                    <button class="btn btn-primary d-block w-100" type="submit" style="color: var(--bs-body-bg);background: #198754;">View Order</button>
+                                </a>
+                            <?php else: ?>
+
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

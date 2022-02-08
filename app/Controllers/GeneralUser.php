@@ -3,7 +3,9 @@
 namespace App\Controllers;
 
 use App\Models\Administrator_Model;
+use App\Models\BannedCustomers_Model;
 use App\Models\Customer_Model;
+use App\Models\Orders_Model;
 use App\Models\Products_Model;
 use App\Models\Supplier_Model;
 use App\Models\Wishlist_Model;
@@ -30,31 +32,41 @@ class GeneralUser extends BaseController
         //Here I am making instance of each model
         $customerModel = new Customer_Model();
         $adminModel = new Administrator_Model();
+        $bannedUsers = new BannedCustomers_Model();
 
         if($this->request->getMethod() == 'post')
         {
-            if($adminModel->adminCheck($_POST['email']) && $adminModel->checkPassword($_POST['email'], $_POST['passwordHash']))
+            if(!$bannedUsers->checkIfBanned($_POST['email']))
             {
-                $admin = $adminModel->where('email', $_POST['email'])
-                                    ->first();
+                if($adminModel->adminCheck($_POST['email']) && $adminModel->checkPassword($_POST['email'], $_POST['passwordHash']))
+                {
+                    $admin = $adminModel->where('email', $_POST['email'])
+                                        ->first();
 
-                $this->setAdminSession($admin);
-                return redirect()->to('/adminHome');
-            }
-            else if($customerModel->customerCheck($_POST['email']) && $customerModel->checkPassword($_POST['email'], $_POST['passwordHash']))
-            {
-                $customer = $customerModel->where('email', $_POST['email'])
-                                            ->first();
+                    $this->setAdminSession($admin);
+                    return redirect()->to('/adminHome');
+                }
+                else if($customerModel->customerCheck($_POST['email']) && $customerModel->checkPassword($_POST['email'], $_POST['passwordHash']))
+                {
+                    $customer = $customerModel->where('email', $_POST['email'])
+                                                ->first();
 
-                //This sets the session of a user
-                $this->setCustomerSession($customer);
-                return redirect()->to('/');
+                    //This sets the session of a user
+                    $this->setCustomerSession($customer);
+                    return redirect()->to('/');
+                }
+                else
+                {
+                    $session = session();
+
+                    $session->setFlashdata('failed', 'Email and Password don\'t match');
+                    return redirect()->to('/login');
+                }
             }
             else
             {
                 $session = session();
-
-                $session->setFlashdata('failed', 'Email and Password don\'t match');
+                $session->setFlashdata('banned', 'This email has been banned');
                 return redirect()->to('/login');
             }
         }
@@ -80,7 +92,6 @@ class GeneralUser extends BaseController
             'country' => $customer['country'],
             'email' => $customer['email'],
             'password' => $customer['password'],
-            'shoppingCart' => $shoppingCart,
             'isLoggedInCustomer' => true
         ];
 
@@ -112,51 +123,62 @@ class GeneralUser extends BaseController
     {
         $data = [];
 
+        $bannedUsers = new BannedCustomers_Model();
+
         helper(['form']);
 
         if($this->request->getMethod() == 'post')
         {
-            $rules = [
-                'contactFirstName' => 'required|min_length[3]|max_length[45]',
-                'contactLastName' =>'required|min_length[3]|max_length[45]',
-                'customerName' => 'required|min_length[3]|max_length[100]',
-                'email' => 'required|min_length[6]|max_length[75]|valid_email|is_unique[customers.email]',
-                'password' => 'required|min_length[8]|max_length[255]',
-                'passwordCon' => 'matches[password]',
-                'addressLine1' => 'required|max_length[100]',
-                'city' => 'required|min_length[2]|max_length[30]',
-                'postalCode' => 'required|min_length[3]|max_length[10]',
-                'country' => 'required',
-                'phone' => 'required'
-            ];
-
-            if(!$this->validate($rules))
+            if(!$bannedUsers->checkIfBanned($_POST['email']))
             {
-                $data['validation'] = $this->validator;
+                $rules = [
+                    'contactFirstName' => 'required|min_length[3]|max_length[45]',
+                    'contactLastName' =>'required|min_length[3]|max_length[45]',
+                    'customerName' => 'required|min_length[3]|max_length[100]',
+                    'email' => 'required|min_length[6]|max_length[75]|valid_email|is_unique[customers.email]',
+                    'password' => 'required|min_length[8]|max_length[255]',
+                    'passwordCon' => 'matches[password]',
+                    'addressLine1' => 'required|max_length[100]',
+                    'city' => 'required|min_length[2]|max_length[30]',
+                    'postalCode' => 'required|min_length[3]|max_length[10]',
+                    'country' => 'required',
+                    'phone' => 'required'
+                ];
+
+                if(!$this->validate($rules))
+                {
+                    $data['validation'] = $this->validator;
+                }
+                else
+                {
+                    $model = new Customer_Model();
+
+                    $newData = [
+                        'customerName' => $_POST['customerName'],
+                        'contactLastName' => $_POST['contactLastName'],
+                        'contactFirstName' => $_POST['contactFirstName'],
+                        'phone'=> $_POST['phone'],
+                        'addressLine1'=> $_POST['addressLine1'],
+                        'addressLine2' => $_POST['addressLine2'],
+                        'city' => $_POST['city'],
+                        'postalCode' => $_POST['postalCode'],
+                        'country' => $_POST['country'],
+                        'creditLimit' => 0,
+                        'email' => $_POST['email'],
+                        'password' =>$_POST['password']
+                    ];
+
+                    $model->save($newData);
+                    $session = session();
+                    $session->setFlashdata('success', 'Successful Registration');
+                    return redirect()->to('/login');
+                }
             }
             else
             {
-                $model = new Customer_Model();
-
-                $newData = [
-                    'customerName' => $_POST['customerName'],
-                    'contactLastName' => $_POST['contactLastName'],
-                    'contactFirstName' => $_POST['contactFirstName'],
-                    'phone'=> $_POST['phone'],
-                    'addressLine1'=> $_POST['addressLine1'],
-                    'addressLine2' => $_POST['addressLine2'],
-                    'city' => $_POST['city'],
-                    'postalCode' => $_POST['postalCode'],
-                    'country' => $_POST['country'],
-                    'creditLimit' => 0,
-                    'email' => $_POST['email'],
-                    'password' =>$_POST['password']
-                ];
-
-                $model->save($newData);
                 $session = session();
-                $session->setFlashdata('success', 'Successful Registration');
-                return redirect()->to('/login');
+                $session->setFlashdata('banned', 'Can\'t create account, email is banned');
+                return redirect()->to('/register');
             }
         }
         else
@@ -173,11 +195,25 @@ class GeneralUser extends BaseController
     {
             $model = new Products_Model();
 
-            $data['news'] = $model->getProducts();
+            $keyword = $this->request->getVar('seachID');
 
-            echo view ('templates/header', $data);
-            echo view('browse');
-            echo view ('templates/footer');
+            if($keyword == null)
+            {
+                $data['news'] = $model->getProducts();
+
+                echo view ('templates/header', $data);
+                echo view('browse');
+                echo view ('templates/footer');
+            }
+            else
+            {
+                $data['news'] = $model->findProducts($keyword);
+
+                echo view ('templates/header', $data);
+                echo view('browse');
+                echo view ('templates/footer');
+            }
+            
     }
 
     public function drilldown($prodID)
@@ -224,17 +260,17 @@ class GeneralUser extends BaseController
 
     public function shoppingCart() 
     {
-        $data['products'] = [];
-
         $model = new Products_Model();
-        $shoppingcart = session()->get('shoppingCart');
 
-        foreach($shoppingcart as $x => $x_value)
+        $data = array_values(session('shoppingcart'));
+        $prodData['products'] = [];
+
+        for($i = 0; $i < count($data); $i++)
         {
-            $data += $model->getProductsByID($x);
+            array_push($prodData, $model->getProducts($data[$i]['id']));
         }
 
-        echo view ('templates/header', $data);
+        echo view ('templates/header', $prodData);
         echo view('shoppingcart');
         echo view ('templates/footer');
     }
@@ -266,9 +302,33 @@ class GeneralUser extends BaseController
 
     public function addToShoppingCart($productID)
     {
+        $item = array(
+            'id' => $productID,
+            'quantity' => 1
+        );
+
+        $cart = array($item);
         $session = session();
-        $session->push('shoppingCart', [$productID => $this->request->getVar('quantity')]);
-        $session->setFlashdata('addedToShoppingCart', 'The Item has been added to the Shopping Cart');
+        if(!$session->has('shoppingcart'))
+        {
+            $session->set('shoppingcart', $cart);
+        }
+        else
+            $session->push('shoppingcart', $cart);
+
         return redirect()->back();
     }
+
+    public function viewOrders()
+    {
+        $model = new Orders_Model();
+        $custID = session()->get('customerNumber');
+
+        $data['order'] = $model->getCustOrders($custID);
+
+        echo view ('templates/header', $data);
+        echo view('orders');
+        echo view ('templates/footer');
+    }
+
 }

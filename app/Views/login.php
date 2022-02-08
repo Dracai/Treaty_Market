@@ -1,7 +1,6 @@
 <section class="login-clean">
     <form action="<?php echo base_url(); ?>/login" method="post">
         <h2 class="visually-hidden">Login Form</h2>
-        <?php var_dump(session()->get('password')) ?>
             <div class="illustration"><img src="<?php echo base_url(); ?>/assets/images/site/logo.png" style="width: 244px;"></div>
             <?php if (session()->get('success')): ?>
                     <div class="alert alert-success" role="alert">

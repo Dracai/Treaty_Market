@@ -24,7 +24,11 @@
                         <button class="btn btn-primary" type="button" style="background: rgb(25,135,84);">Add Product</button>
                     </a>
                 <?php endif; ?>
-                <input class="form-control" type="text" style="margin-left: 55px;"><button class="btn btn-primary" type="button" style="padding: 6px 12px;background: rgb(25,135,84);">Search</button></div>
+                <form action="<?php echo base_url(); ?>/browse" method="post">
+                    <input class="form-control" type="text" name="searchID" id="searchID" style="margin-left: 55px;"/>
+                    <input type="submit" value="Search"/>
+                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -55,6 +59,7 @@
                 <tbody>
                     <?php foreach($news as $newsItem): ?>
                         <tr>
+                        <form action="<?php echo base_url(); ?>/shoppingcart/<?= $newsItem['produceCode'] ?>" method="post">
                             <td>
                                 <?php if(session()->get('isLoggedInAdmin')): ?>
                                     <a href="<?php echo base_url(); ?>/adminDrilldown/<?= $newsItem['produceCode'] ?>"><img src="assets/images/products/thumbs/<?= $newsItem['photo'] ?>"></a></td>
@@ -65,11 +70,13 @@
                             <td style="border-right-width: 1px;border-right-color: rgb(222,226,230);border-left: 1px solid rgb(222,226,230) ;">€ <?= $newsItem['bulkBuyPrice']?></td>
                             <?php if(session()->get('isLoggedInCustomer')):?>
                             <td style="border-right-width: 1px;border-right-color: rgb(222,226,230);border-left: 1px solid rgb(222,226,230) ;">
+                            <form action="" method="post">
                                 <input type="number" id="quantity" name="quantity" sytle="width: 60.188px" min="0">
+                            </form>
                             </td>
                             <td>
                                 <a href="<?php echo site_url('GeneralUser/addToShoppingCart/'.$newsItem['produceCode'])?>">
-                                    <button class="btn btn-primary" type="button_addToCart" style="width: 80px;margin: 0 0 .25em 0 ;">Add to Cart</button>
+                                    <button class="btn btn-primary" type="submit" style="width: 80px;margin: 0 0 .25em 0 ;">Add to Cart</button>
                                 </a>
                                 <a href="<?php echo site_url('GeneralUser/addToWishlist/'.$newsItem['bulkBuyPrice'].'/'.$newsItem['description'].'/'.$newsItem['produceCode'])?>">
                                     <button class="btn btn-primary" id="button_wishlist" type="button" style="width: 80px;">Wishlist</button>
@@ -79,6 +86,7 @@
                             <?php elseif(session()->get('isLoggedInAdmin')): ?>
                             <td><button class="btn btn-primary" type="button">Remove</button></td>
                             <?php endif; ?>
+                            </form>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

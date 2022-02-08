@@ -52,15 +52,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($products as $x): ?>
+                    <?php  ?>
                     <tr>
                         <td><img></td>
-                        <td style="border-left-width: 1px;border-left-color: rgb(222,226,230);"><?= $x['description'] ?></td>
+                        <td style="border-left-width: 1px;border-left-color: rgb(222,226,230);"></td>
                         <td style="border-right-width: 1px;border-right-color: rgb(222,226,230);border-left: 1px solid rgb(222,226,230) ;"></td>
                         <td style="border-right-width: 1px;border-right-style: solid;"></td>
                         <td><button class="btn btn-primary" type="button" style="width: 80px;margin: 0 0 .25em 0 ;">Remove</button></td>
                     </tr>
-                    <?php endforeach; ?>
+                    <?php  ?>
                 </tbody>
             </table>
         </div>
