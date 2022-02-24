@@ -35,7 +35,9 @@
                 <h2 class="text-center" style="color: rgb(255, 255, 255);">Welcome to Treaty Market</h2>
                 <p class="text-center" style="color: rgb(255,255,255);">Are you looking for fresh produce to make your dinner taste even better ? You're in the right place ! You will find all you dinner needs with Treaty Market<br></p>
             </div>
-            <div class="buttons"><a class="btn btn-primary" role="button" href="<?php echo base_url(); ?>/register">Sign UP</a></div>
+            <?php if(!session()->get('isLoggedInAdmin') || !session()->get('isLoggedInCustomer')): ?>
+                <div class="buttons"><a class="btn btn-primary" role="button" href="<?php echo base_url(); ?>/register">Sign UP</a></div>
+            <?php endif; ?>
         </div>
     </section>
     <section class="article-list">

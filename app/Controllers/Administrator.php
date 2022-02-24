@@ -38,6 +38,125 @@ class Administrator extends BaseController
         helper(['form']);
 
         $model = new Products_Model();
+
+        if($this->request->getMethod() == 'post')
+        {
+            if(!isset($_FILES['file']) || $_FILES['file']['error'] == UPLOAD_ERR_NO_FILE)
+            {
+                $rules = [
+                    'description' => 'required|min_length[3]',
+                    'category' => 'required',
+                    'quantity' => 'required',
+                    'bulkBuyPrice' => 'required',
+                    'bulkSalePrice' => 'required'
+                ];
+
+                if(!$this->validate($rules))
+                {
+                    $data['validation'] = $this->validator;
+                }
+                else
+                {
+                    $str = $_POST['description'];
+                    $fileName = str_replace(' ', '', $str).'.jpg';
+
+                    $newData = [
+                        'produceCode' => $prodID,
+                        'description' => $_POST['description'],
+                        'category' => $_POST['category'],
+                        'quantityInStock' => $_POST['quantity'],
+                        'bulkBuyPrice' => (double)$_POST['bulkBuyPrice'],
+                        'bulkSalePrice' => (double)$_POST['bulkSalePrice'],
+                        'photo' => $fileName
+                    ];
+                }
+
+                $model->updateProdWithNoPhoto($newData);
+
+                $session = session();
+                $session->setFlashdata('worked', 'Product has been updated !');
+                return redirect()->back();
+            }
+            else
+            {
+                $rules = [
+                    'description' => 'required|min_length[3]',
+                    'category' => 'required',
+                    'quantity' => 'required',
+                    'bulkBuyPrice' => 'required',
+                    'bulkSalePrice' => 'required'
+                ];
+
+                if(!$this->validate($rules))
+                {
+                    $data['validation'] = $this->validator;
+                }
+                else
+                {
+                    $str = $_POST['description'];
+                    $fileName = str_replace(' ', '', $str).'.jpg';
+
+                    $newData = [
+                        'produceCode' => $prodID,
+                        'description' => $_POST['description'],
+                        'category' => $_POST['category'],
+                        'quantityInStock' => $_POST['quantity'],
+                        'bulkBuyPrice' => (double)$_POST['bulkBuyPrice'],
+                        'bulkSalePrice' => (double)$_POST['bulkSalePrice'],
+                        'photo' => $fileName
+                    ];
+
+                    if($model->updateProdWithPhoto($newData)){
+                        $validateImg = $this->validate([
+                            'file' => [
+                                'uploaded[file]',
+                                'mime_in[file,image/jpg,image/jpeg,image/png,image/gif]',
+                                'max_size[file,4096]',
+                            ]
+                        ]);
+        
+                        if(!$validateImg)
+                        {
+                            print_r('Either file type or size (Max 4MB not correct.');
+                        }
+                        else 
+                        {
+                            $x_file = $this->request->getFile('file');
+                            $image = \Config\Services::image()
+                                ->withFile($x_file)
+                                ->resize(345, 186, true, 'height')
+                                ->save(FCPATH.'/assets/images/products/full/'.$fileName);
+                        }
+        
+                        $validateThumbnail = $this->validate([
+                            'file' => [
+                                'uploaded[file]',
+                                'mime_in[file,image/jpg,image/jpeg,image/png,image/gif]',
+                                'max_size[file,4096]',
+                            ]
+                        ]);
+        
+                        if(!$validateThumbnail)
+                        {
+                            print_r('Either file type or size (Max 4MB not correct.');
+                        }
+                        else
+                        {
+                            $x_file = $this->request->getFile('file');
+                            $image = \Config\Services::image()
+                                ->withFile($x_file)
+                                ->resize(140, 76, true, 'height')
+                                ->save(FCPATH.'/assets/images/products/thumbs/'.$fileName);
+                        }
+        
+                        $session = session();
+                        $session->setFlashdata('worked', 'Product has been updated !');
+                        return redirect()->back();
+                    }
+                }
+            }
+        }
+
         $podData['post'] = $model->getProducts($prodID);
 
         echo view ('templates/header', $podData);
@@ -74,7 +193,7 @@ class Administrator extends BaseController
                 }
 
                 $str = $_POST['description'];
-                $fileName = str_replace(' ', '', $str);
+                $fileName = str_replace(' ', '', $str).'.jpg';
 
                 $newData = [
                     'produceCode' => 'S20_'.$prodID,
@@ -108,6 +227,27 @@ class Administrator extends BaseController
                         ->withFile($x_file)
                         ->resize(345, 186, true, 'height')
                         ->save(FCPATH.'/assets/images/products/full/'.$fileName);
+                }
+
+                $validateThumbnail = $this->validate([
+                    'file' => [
+                        'uploaded[file]',
+                        'mime_in[file,image/jpg,image/jpeg,image/png,image/gif]',
+                        'max_size[file,4096]',
+                    ]
+                ]);
+
+                if(!$validateThumbnail)
+                {
+                    print_r('Either file type or size (Max 4MB not correct.');
+                }
+                else
+                {
+                    $x_file = $this->request->getFile('file');
+                    $image = \Config\Services::image()
+                        ->withFile($x_file)
+                        ->resize(140, 76, true, 'height')
+                        ->save(FCPATH.'/assets/images/products/thumbs/'.$fileName);
                 }
 
                 $session = session();
@@ -236,10 +376,5 @@ class Administrator extends BaseController
 
         return redirect()->back();
 
-    }
-
-    public function comment()
-    {
-        
     }
 }

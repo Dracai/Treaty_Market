@@ -3,7 +3,8 @@
             <div class="intro">
                 <h2 class="text-center">Orders</h2>
             </div>
-            <div class="row people">
+            <?php if($order): ?>
+            <div class="row people"> 
                 <?php foreach($order as $orderItem): ?>
                 <div class="col-md-6 col-lg-4 item">
                     <div class="box">
@@ -15,12 +16,18 @@
                                     <button class="btn btn-primary d-block w-100" type="submit" style="color: var(--bs-body-bg);background: #198754;">View Order</button>
                                 </a>
                             <?php else: ?>
-
+                                <a href="<?php echo base_url(); ?>/viewOrderDetails/<?= $orderItem['orderNumber'] ?>">
+                                    <button class="btn btn-primary d-block w-100" type="submit" style="color: var(--bs-body-bg);background: #198754;">View Order</button>
+                                </a>
                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
                 <?php endforeach; ?>
+                <?php else: ?>
+                    <h2 style="text-align:center;">You have no Orders</h2>
+
+                <?php endif; ?>
             </div>
         </div>
     </section>

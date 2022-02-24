@@ -93,4 +93,27 @@ class Customer_Model extends Model
         else
             return null;
     }
+
+    public function updatePassword($idUser, $newPassword) 
+    {
+        $builder = $this->builder();
+        $builder->set('password', password_hash($newPassword, PASSWORD_DEFAULT))
+                ->where('customerNumber', $idUser)
+
+                ->update();
+    }
+
+    public function updateAddress($newData)
+    {
+        $db = $this->db;
+
+        $query = $db->query("UPDATE customers SET addressLine1 = '".$newData['addressLine1']."', addressLine2 = '".$newData['addressLine2']."',
+                             city = '".$newData['city']."', postalCode = '".$newData['postalCode']."', country = '".$newData['country']."' WHERE customerNumber = '".$newData['custNumber']."';");
+
+        if($query){
+            return $query;
+        }
+        else
+            return null;
+    }
 }

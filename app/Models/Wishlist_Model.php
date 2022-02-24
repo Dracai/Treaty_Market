@@ -24,4 +24,11 @@ class Wishlist_Model extends Model
         else
             return false;
     }
+
+    public function checkItemForCust($custID, $productID)
+    {
+        $builder = $this->builder();
+
+        
+    }
 }

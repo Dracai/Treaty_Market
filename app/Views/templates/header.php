@@ -60,8 +60,7 @@
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/browse" style="color: rgb(255,255,255);">Browse</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/" style="color: rgb(255,255,255);">About Us</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/viewOrders" style="color: rgb(255,255,255);">Orders</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/viewCustOrders" style="color: rgb(255,255,255);">Orders</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo base_url(); ?>/suppliers" style="color: rgb(255,255,255);">Suppliers</a></li>
                 </ul>
                 <form class="me-auto search-form" target="_self">

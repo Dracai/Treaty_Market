@@ -51,6 +51,9 @@ class Orders_Model extends Model
     public function getCustOrders($custID)
     {
         return $this->asArray()
-                    ->where(['customerNumber', $custID]);
+                    ->where(['customerNumber' => $custID])
+                    ->findAll();
     }
+
+    
 }

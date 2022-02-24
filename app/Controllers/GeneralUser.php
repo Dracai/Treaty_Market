@@ -5,10 +5,12 @@ namespace App\Controllers;
 use App\Models\Administrator_Model;
 use App\Models\BannedCustomers_Model;
 use App\Models\Customer_Model;
+use App\Models\OrderDetails_Model;
 use App\Models\Orders_Model;
 use App\Models\Products_Model;
 use App\Models\Supplier_Model;
 use App\Models\Wishlist_Model;
+use CodeIgniter\Validation\Validation;
 
 class GeneralUser extends BaseController
 {
@@ -195,30 +197,25 @@ class GeneralUser extends BaseController
     {
             $model = new Products_Model();
 
-            $keyword = $this->request->getVar('seachID');
-
-            if($keyword == null)
-            {
-                $data['news'] = $model->getProducts();
-
+            if($this->request->getMethod() == 'post'){
+                $data['news'] = $model->findProducts($_POST['searchID']);
+    
                 echo view ('templates/header', $data);
                 echo view('browse');
                 echo view ('templates/footer');
             }
             else
             {
-                $data['news'] = $model->findProducts($keyword);
-
+                $data['news'] = $model->getProducts();
+    
                 echo view ('templates/header', $data);
                 echo view('browse');
                 echo view ('templates/footer');
             }
-            
     }
 
     public function drilldown($prodID)
     {
-
         helper(['form']);
 
         $model = new Products_Model();
@@ -231,7 +228,6 @@ class GeneralUser extends BaseController
 
     public function suppliers()
     {
-        $data = [];
 
         $model = new Supplier_Model;
         $supplierData['sup'] = $model->getAllSuppliers();
@@ -244,31 +240,96 @@ class GeneralUser extends BaseController
     public function profile()
     {
         $model = new Wishlist_Model();
+        $custModel = new Customer_Model();
         $data = [
             'wishlist' => $model->getProductsByCustomer(session()->get('customerNumber'))
         ];
 
         if($this->request->getMethod() == 'post')
         {
+            if(isset($_POST['changePassword']))
+            {
+                $rules = [
+                    'oldPassword' => 'required|min_length[8]|max_length[255]',
+                    'conOldPassword' => 'required|matches[oldPassword]',
+                    'newPassword' => 'required|min_length[8]|max_length[255]',
+                    'conNewPassword' => 'required|matches[newPassword]'
+                ];
 
+                if(!$this->validate($rules))
+                {
+                    $data['passwordValidation'] = $this->validator;
+                }
+                else
+                {
+                    if($custModel->checkPassword(session()->get('email'),$_POST['oldPassword']))
+                    {
+                        $custModel->updatePassword(session()->get('customerNumber'), $_POST['newPassword']);
+
+                        session()->setFlashdata('success', 'Password is updated !');
+                        return redirect()->back();
+                    }
+                }
+            }
+            elseif(isset($_POST['changeAddress']))
+            {
+                $rules = [
+                    'addressOne' => 'required',
+                    'city' => 'required',
+                    'country' => 'required',
+                    'addressTwo' => 'required',
+                    'postalCode' => 'required'
+                ];
+
+                if(!$this->validate($rules))
+                {
+                    $data['addressValidation'] = $this->validator;
+                }
+                else
+                {
+                    $newData = [
+                        'custNumber' => session()->get('customerNumber'),
+                        'addressLine1' => $_POST['addressOne'],
+                        'addressLine2' => $_POST['addressTwo'],
+                        'city' => $_POST['city'],
+                        'postalCode' => $_POST['postalCode'],
+                        'country' => $_POST['country']
+                    ];
+
+                    if($custModel->updateAddress($newData))
+                    {
+                        session()->setFlashdata('success', 'Address will be updated once you login again !');
+                        return redirect()->back();
+                    }
+                    else
+                    {
+                        session()->setFlashdata('failed', 'Failed to update the address !');
+                        return redirect()->back();
+                    }
+                }
+            }
+            else
+            {
+                session()->setFlashdata('failed', 'Something gone wrong');
+                return redirect()->back();
+            }
         }
-
-        echo view ('templates/header', $data);
-        echo view('profile');
-        echo view ('templates/footer');
+        else
+        {
+            echo view ('templates/header', $data);
+            echo view('profile');
+            echo view ('templates/footer');
+        }
     }
 
     public function shoppingCart() 
     {
         $model = new Products_Model();
-
-        $data = array_values(session('shoppingcart'));
         $prodData['products'] = [];
+        $data['products'] = [];
 
-        for($i = 0; $i < count($data); $i++)
-        {
-            array_push($prodData, $model->getProducts($data[$i]['id']));
-        }
+        $data['products'] = array(session('shoppingcart'));
+        $prodData = $data;
 
         echo view ('templates/header', $prodData);
         echo view('shoppingcart');
@@ -277,16 +338,20 @@ class GeneralUser extends BaseController
 
     public function addToWishlist($price, $description, $productID)
     {
-        $wishlistModel = new Wishlist_Model();
+        $wishListModel = new Wishlist_Model();
+        $wishList = $wishListModel->getProductsByCustomer(session()->get('customerNumber'));
 
-        if($wishlistModel->getItem($productID))
+        foreach($wishList as $x)
         {
-            $session = session();
-            $session->setFlashdata('duplicate', 'This item already in your wishlist !');
-            return redirect()->back();
+            if($x['productID'] == $productID)
+            {
+                $session = session();
+                $session->setFlashdata('duplicate', 'This item already in your wishlist !');
+                return redirect()->back();
+            }
         }
-        else {
-            $wishlistModel->save(
+
+            $wishListModel->save(
             [
                 'customerNumber' => session()->get('customerNumber'),
                 'productID' => $productID,
@@ -297,15 +362,25 @@ class GeneralUser extends BaseController
             $session = session();
             $session->setFlashdata('wishlist', 'Item has been added to the wishlist !');
             return redirect()->to('/browse');
-        }
+        
     }
 
     public function addToShoppingCart($productID)
     {
-        $item = array(
-            'id' => $productID,
-            'quantity' => 1
-        );
+        if($_POST['quantity'] == null)
+        {
+            $item = array(
+                'id' => $productID,
+                'quantity' => 1
+            );
+        }
+        else
+        {
+            $item = array(
+                'id' => $productID,
+                'quantity' => $_POST['quantity']
+            );
+        }   
 
         $cart = array($item);
         $session = session();
@@ -316,18 +391,41 @@ class GeneralUser extends BaseController
         else
             $session->push('shoppingcart', $cart);
 
+        session()->setFlashdata('addToCart', 'Item added to you shopping cart !');
         return redirect()->back();
     }
 
-    public function viewOrders()
+    public function viewCustOrders()
     {
         $model = new Orders_Model();
-        $custID = session()->get('customerNumber');
 
-        $data['order'] = $model->getCustOrders($custID);
+        $data['order'] = $model->getCustOrders(session()->get('customerNumber'));
 
         echo view ('templates/header', $data);
         echo view('orders');
+        echo view ('templates/footer');
+    }
+
+    public function viewOrderDetails($orderID)
+    {
+        helper(['form']);
+
+        $detailsModel = new OrderDetails_Model();
+        $orderModel = new Orders_Model();
+
+        if($this->request->getMethod() == 'post')
+        {
+            $comment = $_POST['comment'];
+            $orderNum = $_POST['orderNum'];
+
+            $orderModel->setComment($orderNum, $comment);
+        }
+
+        $orderData['orders'] = $orderModel->getCustOrders($orderID);
+        $detailsData['orderDetails'] = $detailsModel->inspectOrder($orderID);
+
+        echo view ('templates/header', $orderData + $detailsData);
+        echo view('orderDrilldown');
         echo view ('templates/footer');
     }
 

@@ -13,9 +13,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-6">
-                <div class="dropdown"><button class="btn btn-primary dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button" style="margin: 1em;background: rgb(25,135,84);">Categories</button>
-                    <div class="dropdown-menu"><a class="dropdown-item" href="#">All</a><a class="dropdown-item" href="#">Vegetables</a><a class="dropdown-item" href="#">Fruits</a><a class="dropdown-item" href="#">Bakery</a></div>
-                </div>
+                
             </div>
             <div class="col">
                 <div class="input-group" style="margin: 1em 0 0 4.1em;width: 30em;">
@@ -25,7 +23,7 @@
                     </a>
                 <?php endif; ?>
                 <form action="<?php echo base_url(); ?>/browse" method="post">
-                    <input class="form-control" type="text" name="searchID" id="searchID" style="margin-left: 55px;"/>
+                    <input type="text" name="searchID" id="searchID" style="margin-left: 55px;"/>
                     <input type="submit" value="Search"/>
                 </form>
                 </div>
@@ -40,6 +38,10 @@
         <?php elseif (session()->get('duplicate')):?>
             <div class="alert alert-warning" role="alert">
                 <?= session()->get('duplicate')?>
+            </div>
+        <?php elseif (session()->get('addToCart')):?>
+            <div class="alert alert-success" role="alert">
+                <?= session()->get('addToCart')?>
             </div>
         <?php endif; ?>
         <div class="table-responsive">
@@ -59,7 +61,7 @@
                 <tbody>
                     <?php foreach($news as $newsItem): ?>
                         <tr>
-                        <form action="<?php echo base_url(); ?>/shoppingcart/<?= $newsItem['produceCode'] ?>" method="post">
+                        <form action="<?php echo base_url(); ?>/addToShoppingCart/<?= $newsItem['produceCode'] ?>" method="post">
                             <td>
                                 <?php if(session()->get('isLoggedInAdmin')): ?>
                                     <a href="<?php echo base_url(); ?>/adminDrilldown/<?= $newsItem['produceCode'] ?>"><img src="assets/images/products/thumbs/<?= $newsItem['photo'] ?>"></a></td>
@@ -72,10 +74,9 @@
                             <td style="border-right-width: 1px;border-right-color: rgb(222,226,230);border-left: 1px solid rgb(222,226,230) ;">
                             <form action="" method="post">
                                 <input type="number" id="quantity" name="quantity" sytle="width: 60.188px" min="0">
-                            </form>
                             </td>
                             <td>
-                                <a href="<?php echo site_url('GeneralUser/addToShoppingCart/'.$newsItem['produceCode'])?>">
+                                <a href="<?php echo site_url('GeneralUser/addToShoppingCart/'.$newsItem['produceCode'].'/'.$newsItem['description'].'/'.$newsItem['bulkBuyPrice'])?>">
                                     <button class="btn btn-primary" type="submit" style="width: 80px;margin: 0 0 .25em 0 ;">Add to Cart</button>
                                 </a>
                                 <a href="<?php echo site_url('GeneralUser/addToWishlist/'.$newsItem['bulkBuyPrice'].'/'.$newsItem['description'].'/'.$newsItem['produceCode'])?>">

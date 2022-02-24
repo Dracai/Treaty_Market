@@ -51,4 +51,26 @@ class Products_Model extends Model
         $query = $db->query("SELECT * FROM products WHERE description LIKE '%".$keyword."%'");
         return $query->getResultArray();
     }
+    
+    public function updateProdWithPhoto($newData)
+    {
+        $db = $this->db;
+
+        $query = $db->query("UPDATE products SET description = '".$newData['description']."', category = '".$newData['category']."',
+                                        quantityInStock = '".$newData['quantityInStock']."', bulkBuyPrice = '".$newData['bulkBuyPrice']."',
+                                         bulkSalePrice = '".$newData['bulkSalePrice']."', photo = '".$newData['photo']."' WHERE produceCode = '".$newData['produceCode']."';");
+
+        return $query;
+    }
+
+    public function updateProdWithNoPhoto($newData)
+    {
+        $db = $this->db;
+
+        $query = $db->query("UPDATE products SET description = '".$newData['description']."', category = '".$newData['category']."',
+                                        quantityInStock = '".$newData['quantityInStock']."', bulkBuyPrice = '".$newData['bulkBuyPrice']."',
+                                         bulkSalePrice = '".$newData['bulkSalePrice']."' WHERE produceCode = '".$newData['produceCode']."';");
+
+        return $query;
+    }
 }
