@@ -33,6 +33,11 @@
         <div class="form-container">
             <form action="<?php echo base_url(); ?>/register" method="post">
                 <h2 class="text-center" style="color: rgb(80, 94, 108);"><strong>Create</strong> an account.</h2>
+                <?php if (session()->get('banned')): ?>
+                    <div class="alert alert-warning" role="alert">
+                        <?= session()->get('banned')?>
+                    </div>
+                <?php endif; ?>
                 <div class="mb-3"></div>
                 <div class="mb-3">
                     <div class="container">

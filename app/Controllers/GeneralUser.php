@@ -314,12 +314,10 @@ class GeneralUser extends BaseController
                 return redirect()->back();
             }
         }
-        else
-        {
+
             echo view ('templates/header', $data);
             echo view('profile');
             echo view ('templates/footer');
-        }
     }
 
     public function shoppingCart() 

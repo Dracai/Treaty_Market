@@ -18,13 +18,16 @@
                 </div>
             </div>
             <div class="row text-center">
-                <div class="col-md-10 col-lg-7 offset-md-1 offset-lg-0" style="width: 1320px;">
+                <div class="col-md-10 col-lg-7 offset-md-1 offset-lg-0" style="width: 1320px; margin-bottom: 1em;">
                     <?php if(session()->get('isLoggedInAdmin')): ?>
                         <p style="font-size: 22px;">Produce Code : <?= $post["produceCode"] ?></p>
                     <?php endif; ?>
                         <p style="font-size: 22px;">Price : € <?= $post["bulkBuyPrice"] ?></p>
                     <?php if(session()->get('isLoggedInCustomer')): ?>
-                        <button class="btn btn-primary" type="button" style="margin: 1em;">Add to Cart</button>
+                        <form action="<?php echo base_url(); ?>/addToShoppingCart/<?= $post['produceCode'] ?>" method="post">
+                            <input type="number" id="quantity" name="quantity" placeholder="Quantity" sytle="width: 60.188px" min="0">
+                            <button class="btn btn-primary" type="submit" style="margin: 1em;">Add to Cart</button>
+                        </form>
                         <a href="<?php echo site_url('GeneralUser/addToWishlist/'.$post['bulkBuyPrice'].'/'.$post['description'].'/'.$post['produceCode'])?>">
                             <button class="btn btn-primary" type="button" style="margin: 0 1em 0 0;background: rgb(25,135,84);">Add to Wishlist</button>
                         </a>

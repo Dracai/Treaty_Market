@@ -55,5 +55,20 @@ class Orders_Model extends Model
                     ->findAll();
     }
 
+    public function searchOrders($orderID)
+    {
+        $builder = $this->builder();
+        $query = $builder->getWhere(['orderNumber', $orderID])->getFirstRow();
+                        
+
+        if($query)
+        {
+            return $query;
+        }
+        else
+            return null;
+
+    }
+
     
 }

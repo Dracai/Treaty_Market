@@ -3,9 +3,9 @@
             <div class="intro">
                 <h2 class="text-center">Orders</h2>
             </div>
-            <?php if($order): ?>
+            <?php if($orders): ?>
             <div class="row people"> 
-                <?php foreach($order as $orderItem): ?>
+                <?php foreach($orders as $orderItem): ?>
                 <div class="col-md-6 col-lg-4 item">
                     <div class="box">
                         <h3 class="name"><?= $orderItem['orderNumber'] ?></h3>
@@ -25,8 +25,7 @@
                 </div>
                 <?php endforeach; ?>
                 <?php else: ?>
-                    <h2 style="text-align:center;">You have no Orders</h2>
-
+                    <h2 style="text-align:center;">There is no Orders !</h2>
                 <?php endif; ?>
             </div>
         </div>

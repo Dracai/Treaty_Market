@@ -36,4 +36,11 @@ class OrderDetails_Model extends Model
         $this->db->table('orderdetails')->where('orderNumber', $orderNumber)->delete();
         return;
     }
+
+    public function checkForProducts($prodID)
+    {
+        return $this->asArray()
+                    ->where(['productCode' => $prodID])
+                    ->findAll();
+    }
 }

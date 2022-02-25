@@ -263,25 +263,56 @@ class Administrator extends BaseController
     public function delProduct()
     {
         $model = new Products_Model();
+        $orderDetailsModel = new OrderDetails_Model();
 
         $urlsplit = explode('/', current_url());
         $prodID = $urlsplit[count($urlsplit) - 1];
 
-        $model->delProd($prodID);
-        $session = session();
-        $session->getFlashdata('deletedProduct', 'Product has been deleted.');
-        return redirect()->to('/browse');
+        $productOrders = $orderDetailsModel->checkForProducts($prodID);
+
+        if(empty($productOrders))
+        {
+            $model->delProd($prodID);
+            $session = session();
+            $session->setFlashdata('deletedProduct', 'Product has been deleted.');
+            return redirect()->to('/browse');
+        }
+        else
+        {
+            $session = session();
+            $session->setFlashdata('cantDelete', 'Product can\'t be deleted as it is in an ongoing order.');
+            return redirect()->to('/browse');
+        }
+        
     }
 
     public function viewOrders()
     {
         $model = new Orders_Model();
 
-        $data['order'] = $model->getOrders();
+        
+        $keyword = $this->request->getVar('searchID');
+        $data['orders'] = $model->getOrders();
 
-        echo view ('templates/header', $data);
-        echo view('orders');
-        echo view ('templates/footer');
+        if($keyword == null)
+        {
+            
+            $orderData['custOrder'] = null;
+
+            echo view ('templates/header', $data + $orderData);
+            echo view('orders');
+            echo view ('templates/footer');
+        }
+        else
+        {
+            $orderData['custOrder'] = $model->searchOrders($keyword);
+
+            echo view ('templates/header', $data + $orderData);
+            echo view('orders');
+            echo view ('templates/footer');
+        }
+
+        
     }
 
     public function viewOrderDetails($orderID)
@@ -311,11 +342,25 @@ class Administrator extends BaseController
     {
         $model = new Customer_Model();
 
+        $keyword = $this->request->getVar('searchID');
         $data['customers'] = $model->getCustomers();
 
-        echo view ('templates/header', $data);
-        echo view('adminUsers');
+        if($keyword == null)
+        {
+            $custData['customer'] = [];
+
+            echo view ('templates/header', $data + $custData);
+            echo view('adminUsers');
+        }
+        else
+        {
+            $custData['customer'] = $model->searchCustomer($keyword);
+
+            echo view ('templates/header', $data + $custData);
+            echo view('adminUsers');
+        }
     }
+        
 
     public function delCustomer()
     {

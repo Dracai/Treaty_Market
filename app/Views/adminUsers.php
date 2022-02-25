@@ -11,11 +11,45 @@
             </div>
         <?php endif; ?>
         <h1 class="text-center" style="margin-top: 1em; font-weight: 600;">Customers</h1>
-    <form action="<?php echo base_url();?>/viewUsers" method = "post" style="margin-top: 2em; ">
+    <form action="<?php echo base_url();?>/Administrator/displayUsers" method = "post" style="margin-top: 2em; ">
         <label for="searchID">Search by Customer Number :</label>
             <input type="text" name ="searchID" id="searchID"/>
         <input type="submit" value="Search"/>
     </form>
+    <?php if($customer): ?>
+        <table class="table table-striped table-hover" style="margin-top: 3em;">
+        <thead>
+            <tr>
+            <th scope="col">Customer No</th>
+            <th scope="col">First Name</th>
+            <th scope="col">LastName</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="table-default">
+            <th scope="row"><?= $customer->{'customerNumber'} ?></th>
+            <td><?= $customer->{'contactFirstName'} ?></td>
+            <td><?= $customer->{'contactLastName'} ?></td>
+            <td><?= $customer->{'phone'} ?></td>
+            <td><?= $customer->{'email'} ?></td>
+            <td>
+                <a href="<?php echo site_url('Administrator/banCustomer/'.$customer->{'customerNumber'}); ?>" 
+                onclick="return confirm('Do you want to ban this User?');">
+                    <button id="button_delete" type="button" class="btn btn-primary" style="border-radius: 4px;">Ban</button>
+                </a>
+            </td>
+            <td>
+                <a href="<?php echo site_url('Administrator/delCustomer/'.$customer->{'customerNumber'}); ?>" 
+                onclick="return confirm('Do you want to delete this Customer?');">
+                    <button id="button_delete" type="button" class="btn btn-primary" style="border-radius: 4px;">Delete</button>
+                </a>
+            </td>
+            </tr>
+        </tbody>
+    </table>
+    <?php endif; ?>
 
     <?php if($customers): ?>
     <table class="table table-striped table-hover" style="margin-top: 3em;">

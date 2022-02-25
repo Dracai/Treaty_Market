@@ -59,7 +59,7 @@
                                     <?php if(isset($passwordValidation)) :?>
                                         <div class="col-12">
                                             <div class="alert alert-danger" role="alert">
-                                                <?= $validation->listErrors() ?>
+                                                <?= $passwordValidation->listErrors() ?>
                                             </div>
                                         </div>
                                     <?php endif; ?>
@@ -79,7 +79,7 @@
                                     <?php if(isset($addressValidation)) :?>
                                         <div class="col-12">
                                             <div class="alert alert-danger" role="alert">
-                                                <?= $validation->listErrors() ?>
+                                                <?= $addressValidation->listErrors() ?>
                                             </div>
                                         </div>
                                     <?php endif; ?>
